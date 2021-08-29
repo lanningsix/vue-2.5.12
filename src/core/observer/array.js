@@ -24,6 +24,7 @@ export const arrayMethods = Object.create(arrayProto)
   const original = arrayProto[method]
   def(arrayMethods, method, function mutator (...args) {
     const result = original.apply(this, args)
+    // 拿到当前的实例
     const ob = this.__ob__
     let inserted
     switch (method) {
@@ -32,6 +33,7 @@ export const arrayMethods = Object.create(arrayProto)
         inserted = args
         break
       case 'splice':
+        // splice函数第三个参数是要插入的值, slice(2)是截取需要插入的值
         inserted = args.slice(2)
         break
     }

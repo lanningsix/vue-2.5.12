@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
+
 <body>
   <div id="el">
     {{selected}}
@@ -23,5 +25,20 @@
       }
     })
   </script>
+  <script>
+    a = [123]
+    const newMethods = Object.create(Array.prototype)
+    const original = Array.prototype.push
+    Object.defineProperty(Array.prototype, 'push', {
+      value: function mutator(...args) {
+        console.log('🚀 ~ file: index.html ~ line 31 ~ args', args)
+        return original.call(this, args)
+      },
+      enumerable: false,
+      writable: true,
+      configurable: true
+    })
+  </script>
 </body>
+
 </html>

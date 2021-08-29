@@ -43,6 +43,7 @@ export class Observer {
     this.vmCount = 0
     def(value, '__ob__', this)
     if (Array.isArray(value)) {
+      // 判别是否支持__proto__, 如果不支持则调用copyAugment将拦截器中的方法挂载到value上, 如果支持，则直接覆盖value的__proto__
       const augment = hasProto
         ? protoAugment
         : copyAugment
@@ -105,6 +106,7 @@ function copyAugment (target: Object, src: Object, keys: Array<string>) {
  * or the existing observer if the value already has one.
  */
 export function observe (value: any, asRootData: ?boolean): Observer | void {
+  // 如果不是一个object则直接退出
   if (!isObject(value) || value instanceof VNode) {
     return
   }
