@@ -26,11 +26,11 @@
     })
   </script>
   <script>
-    a = [123]
+    const a = [123]
     const newMethods = Object.create(Array.prototype)
     const original = Array.prototype.push
     Object.defineProperty(Array.prototype, 'push', {
-      value: function mutator(...args) {
+      value: function mutator (...args) {
         console.log('🚀 ~ file: index.html ~ line 31 ~ args', args)
         return original.call(this, args)
       },

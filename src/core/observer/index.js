@@ -195,21 +195,25 @@ export function defineReactive (
 export function set (target: Array<any> | Object, key: any, val: any): any {
   if (Array.isArray(target) && isValidArrayIndex(key)) {
     target.length = Math.max(target.length, key)
+    // 利用target的splice方法触发响应式
     target.splice(key, 1, val)
     return val
   }
+  // key值已存在于target中, 直接修改数据即可
   if (key in target && !(key in Object.prototype)) {
     target[key] = val
     return val
   }
   const ob = (target: any).__ob__
   if (target._isVue || (ob && ob.vmCount)) {
+    // target不能是Vue.js实例或Vue.js实例的根数据对象
     process.env.NODE_ENV !== 'production' && warn(
       'Avoid adding reactive properties to a Vue instance or its root $data ' +
       'at runtime - declare it upfront in the data option.'
     )
     return val
   }
+  // target不是响应式情况
   if (!ob) {
     target[key] = val
     return val
@@ -223,6 +227,7 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
  * Delete a property and trigger change if necessary.
  */
 export function del (target: Array<any> | Object, key: any) {
+  // 如果target是数组，且是有效的下标传入
   if (Array.isArray(target) && isValidArrayIndex(key)) {
     target.splice(key, 1)
     return
