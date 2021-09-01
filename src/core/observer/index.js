@@ -234,6 +234,7 @@ export function del (target: Array<any> | Object, key: any) {
   }
   const ob = (target: any).__ob__
   if (target._isVue || (ob && ob.vmCount)) {
+    // target不能是Vue.js实例或Vue.js实例的根数据对象
     process.env.NODE_ENV !== 'production' && warn(
       'Avoid deleting properties on a Vue instance or its root $data ' +
       '- just set it to null.'
@@ -244,9 +245,12 @@ export function del (target: Array<any> | Object, key: any) {
     return
   }
   delete target[key]
+  // 只有响应式数据才触发发送通知
   if (!ob) {
+    // 非响应式数据直接return
     return
   }
+  // 触发发送通知
   ob.dep.notify()
 }
 

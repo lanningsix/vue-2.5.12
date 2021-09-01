@@ -339,6 +339,10 @@ export function stateMixin (Vue: Class<Component>) {
     options?: Object
   ): Function {
     const vm: Component = this
+    // 如果是一个对象, 则递归调用执行
+    // export function isPlainObject (obj: any): boolean {
+    //   return _toString.call(obj) === '[object Object]'
+    // }
     if (isPlainObject(cb)) {
       return createWatcher(vm, expOrFn, cb, options)
     }
@@ -353,3 +357,7 @@ export function stateMixin (Vue: Class<Component>) {
     }
   }
 }
+// 1. 将模版编译成渲染函数
+// 2. 执行渲染函数生成vnode(虚拟节点)
+// 3. 使用虚拟节点更新视图
+// 4. 新的Node和旧的Node进行对比

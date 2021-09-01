@@ -30,7 +30,7 @@
     const newMethods = Object.create(Array.prototype)
     const original = Array.prototype.push
     Object.defineProperty(Array.prototype, 'push', {
-      value: function mutator (...args) {
+      value: function mutator(...args) {
         console.log('🚀 ~ file: index.html ~ line 31 ~ args', args)
         return original.call(this, args)
       },
@@ -38,7 +38,32 @@
       writable: true,
       configurable: true
     })
-  </script>
+
+    let a = function () {
+      console.log(this)
+      console.log(this.name)
+    }
+    let b = { name: '我是b' }
+    a.bind(b)
+
+    Object.prototype.bind = function (newObj, ...args) {
+      const ctx = newObj || window
+      ctx.fn = this
+      return function (...argsRemain) {
+        const result = ctx.fn(...args, ...argsRemain)
+        delete ctx.fn
+        return res
+      }
+    }
+    // 首先从对象说起，vue将data初始化为observer 利用Object.defineProperty重写每个对象的每个属性的get, set方法，每一个key都有一个独立的依赖收集器
+    // 每个组件实例都对应一个 watcher 实例，它会在组件渲染的过程中把“接触”过的数据 property 记录为依赖。之后当依赖项的 setter 触发时，在get里面收集每一个watcher（渲染watcher， 计算属性watcher, 侦听器watcher），存储在dep中
+    // 在set更新的时候通知dep，dep再通知每一个watcher，从而达到更新
+    // 响应式数组会重写它的push，slice, pop等7个方法, 在触发的时候，拿到当前的dep，通知更新
+
+//     当创建 Vue 实例时,vue 会遍历 data 选项的属性,利用 Object.defineProperty 为属性添加 getter 和 setter 对数据的读取进行劫持（getter 用来依赖收集,setter 用来派发更新）,并且在内部追踪依赖,在属性被访问和修改时通知变化。
+
+// 每个组件实例会有相应的 watcher 实例,会在组件渲染的过程中记录依赖的所有数据属性（进行依赖收集,还有 computed watcher,user watcher 实例）,之后依赖项被改动时,setter 方法会通知依赖与此 data 的 watcher 实例重新计算（派发更新）,从而使它关联的组件重新渲染。
+</script>
 </body>
 
 </html>

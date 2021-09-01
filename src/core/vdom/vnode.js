@@ -1,23 +1,23 @@
 /* @flow */
 
 export default class VNode {
-  tag: string | void;
-  data: VNodeData | void;
-  children: ?Array<VNode>;
-  text: string | void;
+  tag: string | void; // 元素节点名称
+  data: VNodeData | void; //
+  children: ?Array<VNode>; // 子节点
+  text: string | void; // 文本节点的文本内容
   elm: Node | void;
   ns: string | void;
-  context: Component | void; // rendered in this component's scope
+  context: Component | void; // rendered in this component's scope 当前组件的Vue.js实例
   key: string | number | void;
-  componentOptions: VNodeComponentOptions | void;
-  componentInstance: Component | void; // component instance
+  componentOptions: VNodeComponentOptions | void; // 组件节点的选项参数
+  componentInstance: Component | void; // component instance // 组件的实例, 也是vue.js的实例, 在Vue.js中，每个组件都是一个Vue.js实例
   parent: VNode | void; // component placeholder node
 
   // strictly internal
   raw: boolean; // contains raw HTML? (server only)
   isStatic: boolean; // hoisted static node
   isRootInsert: boolean; // necessary for enter transition check
-  isComment: boolean; // empty comment placeholder?
+  isComment: boolean; // empty comment placeholder? 是否是注释节点
   isCloned: boolean; // is a cloned node?
   isOnce: boolean; // is a v-once node?
   asyncFactory: Function | void; // async component factory function
@@ -70,6 +70,7 @@ export default class VNode {
   }
 }
 
+// 注释节点
 export const createEmptyVNode = (text: string = '') => {
   const node = new VNode()
   node.text = text
@@ -77,6 +78,7 @@ export const createEmptyVNode = (text: string = '') => {
   return node
 }
 
+// 文本节点
 export function createTextVNode (val: string | number) {
   return new VNode(undefined, undefined, undefined, String(val))
 }
@@ -104,6 +106,7 @@ export function cloneVNode (vnode: VNode, deep?: boolean): VNode {
   cloned.fnContext = vnode.fnContext
   cloned.fnOptions = vnode.fnOptions
   cloned.fnScopeId = vnode.fnScopeId
+  // 唯一区别
   cloned.isCloned = true
   if (deep) {
     if (vnode.children) {
