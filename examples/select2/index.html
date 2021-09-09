@@ -1,29 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Vue.js wrapper component example (jquery plugin: select2)</title>
-    <!-- Delete ".min" for console warnings in development -->
-    <script src="../../dist/vue.min.js"></script>
-    <script src="https://unpkg.com/jquery"></script>
-    <script src="https://unpkg.com/select2@4.0.3"></script>
-    <link href="https://unpkg.com/select2@4.0.3/dist/css/select2.min.css" rel="stylesheet">
-    <style>
-      html, body {
-        font: 13px/18px sans-serif;
-      }
-      select {
-        min-width: 300px;
-      }
-    </style>
-  </head>
-  <body>
 
-    <div id="el">
-    </div>
+<head>
+  <meta charset="utf-8">
+  <title>Vue.js wrapper component example (jquery plugin: select2)</title>
+  <!-- Delete ".min" for console warnings in development -->
+  <script src="../../dist/vue.min.js"></script>
+  <script src="https://unpkg.com/jquery"></script>
+  <script src="https://unpkg.com/select2@4.0.3"></script>
+  <link href="https://unpkg.com/select2@4.0.3/dist/css/select2.min.css" rel="stylesheet">
+  <style>
+    html,
+    body {
+      font: 13px/18px sans-serif;
+    }
 
-    <!-- using string template here to work around HTML <option> placement restriction -->
-    <script type="text/x-template" id="demo-template">
+    select {
+      min-width: 300px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="el">
+  </div>
+
+  <!-- using string template here to work around HTML <option> placement restriction -->
+  <script type="text/x-template" id="demo-template">
       <div>
         <p>Selected: {{ selected }}</p>
         <select2 :options="options" v-model="selected">
@@ -32,53 +36,79 @@
       </div>
     </script>
 
-    <script type="text/x-template" id="select2-template">
+  <script type="text/x-template" id="select2-template">
       <select>
         <slot></slot>
       </select>
     </script>
 
-    <script>
-    Vue.component('select2', {
-      props: ['options', 'value'],
-      template: '#select2-template',
-      mounted: function () {
-        var vm = this
-        $(this.$el)
-          .val(this.value)
-          // init select2
-          .select2({ data: this.options })
-          // emit event on change.
-          .on('change', function () {
-            vm.$emit('input', this.value)
-          })
-      },
-      watch: {
-        value: function (value) {
-          // update value
-          $(this.$el).val(value).trigger('change')
-        },
-        options: function (options) {
-          // update options
-          $(this.$el).select2({ data: options })
-        }
-      },
-      destroyed: function () {
-        $(this.$el).off().select2('destroy')
-      }
+  <script>
+    const po0 = Promise.resolve()
+    // main 1 [po1]
+    const po1 = po0.then(() => {
+
+      console.log("a") // 1
+      const pa = Promise.resolve()
+      const pb = pa.then(() => {
+        /**
+         * microtask 3 log(b) pb=>fulfilled enquque pc
+         * [job, 2, pc]
+         */
+        console.log("b") // 3
+        return "c"
+      })
+      const pc = pb.then(() => {
+        /**
+         * microtask 6 log(p) pc=>fulfilled
+         * pc的PromiseFulfillReactions开始遍历进队列，enqueue {po1.resolve}
+         * [3, {po1.resolve}]
+         */
+        console.log('p') // 5
+        return 'o'
+      })
+      return pc
+    })
+    /**
+     * microtask 8
+     * 执行代码：{po1.resolve}
+     * po1=>fulfilled, po1的PromiseFulfillReactions开始遍历进队列, enqueue po2
+     * [4, po2]
+     */
+    const po2 = po1.then(res => {
+      /**
+       * microtask 10 log(po1.[[value]]) log(o)
+       * po2的PromiseFulfillReactions为空
+       * [5]
+       */
+      console.log(res) // 8
     })
 
-    var vm = new Vue({
-      el: '#el',
-      template: '#demo-template',
-      data: {
-        selected: 0,
-        options: [
-          { id: 1, text: 'Hello' },
-          { id: 2, text: 'World' }
-        ]
-      }
+    const p0 = Promise.resolve()
+    // main 2 [po1, 1]
+    const p1 = p0.then(() => {
+      // microtask 2 log(1) [pb, job, 2]
+      console.log(1) // 2
     })
-    </script>
-  </body>
+    const p2 = p1.then(() => {
+      // microtask 5 log(2) [pc, 3]
+      console.log(2) // 4
+    })
+    const p3 = p2.then(() => {
+      // microtask 7 log(3) [{po1.resolve}, 4]
+      console.log(3) // 6
+    })
+    const p4 = p3.then(() => {
+      // microtask 9 log(4) [po2, 5]
+      console.log(4) // 7
+    })
+    const p5 = p4.then(() => {
+      // microtask 11 log(5) []
+      console.log(5) // 9
+    })
+
+
+
+  </script>
+</body>
+
 </html>

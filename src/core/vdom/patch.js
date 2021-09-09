@@ -71,6 +71,7 @@ export function createPatchFunction (backend) {
   let i, j
   const cbs = {}
 
+  // nodeOps是框架的渲染操作封装类，为了解决跨平台渲染的机制不同，对操作进行了封装
   const { modules, nodeOps } = backend
 
   for (i = 0; i < hooks.length; ++i) {
@@ -766,3 +767,4 @@ export function createPatchFunction (backend) {
     return vnode.elm
   }
 }
+

@@ -194,11 +194,13 @@ export function parseHTML (html, options) {
         start: index
       }
       advance(start[0].length)
+      // 解析标签属性
       let end, attr
       while (!(end = html.match(startTagClose)) && (attr = html.match(attribute))) {
         advance(attr[0].length)
         match.attrs.push(attr)
       }
+      // 判断是否自闭合标签
       if (end) {
         match.unarySlash = end[1]
         advance(end[0].length)

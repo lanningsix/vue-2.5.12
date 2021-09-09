@@ -106,3 +106,5 @@ function mergeProps (to, from) {
     to[camelize(key)] = from[key]
   }
 }
+
+// 模版 - 解析AST（解析器-过滤解析器、文本解析器、HTML解析器） - 遍历AST标记静态节点（优化器） - 使用AST生成渲染函数（代码生成器）

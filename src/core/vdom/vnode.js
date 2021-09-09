@@ -15,11 +15,11 @@ export default class VNode {
 
   // strictly internal
   raw: boolean; // contains raw HTML? (server only)
-  isStatic: boolean; // hoisted static node
+  isStatic: boolean; // hoisted static node // 是否是静态节点
   isRootInsert: boolean; // necessary for enter transition check
   isComment: boolean; // empty comment placeholder? 是否是注释节点
-  isCloned: boolean; // is a cloned node?
-  isOnce: boolean; // is a v-once node?
+  isCloned: boolean; // is a cloned node? // 是否是克隆节点
+  isOnce: boolean; // is a v-once node? // 是否只渲染一次的节点
   asyncFactory: Function | void; // async component factory function
   asyncMeta: Object | void;
   isAsyncPlaceholder: boolean;
